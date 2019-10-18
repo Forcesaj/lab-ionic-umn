@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Week 01</title>
+    <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/ionic.bundle.css" />
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+    <style>
+        .delete{
+            --background: white;
+            --color: red;
+        }
+    </style>
+</head>
+<body>
+    <ion-app>
+        <ion-header>
+            <ion-toolbar color="primary">  
+                <ion-title class="ion-text-center">Budget Planner</ion-title>
+            </ion-toolbar>
+        </ion-header>
+
+        <ion-content>
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-title>Input Pengeluaran</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <form id="myForm" onsubmit="inputform(event)">
+                        <ion-item>
+                            <ion-input type="text" name="nama" placeholder="Nama Pengeluaran" oninput="valuenama(event)"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input type="number" name="jumlah" placeholder="Jumlah Pengeluaran" oninput="valuejumlah(event)"></ion-input>
+                        </ion-item>
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col></ion-col>
+                                <ion-col>
+                                    <ion-button onclick="reset(event)" class="delete">x delete</ion-button>
+                                </ion-col>
+                                <ion-col>
+                                    <ion-button type="submit" size="default" color="primary">+ Tambah</ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </form>
+                </ion-card-content>
+            </ion-card>
+            <ion-list id="pengeluaran_list">
+
+            </ion-list>
+            <div margin-horizontal="5">
+                <ion-label id="total_pengeluaran">Total Pengeluaran : Rp. 0,00</ion-label>                
+            </div>
+        </ion-content>     
+
+    </ion-app>
+
+    <script src="https://unpkg.com/@ionic/core@latest/dist/ionic.js"></script>
+    <script>
+        const controller = document.querySelector('ion-alert-controller');
+        var pengeluaran = [];
+        let nama, jumlah;
+
+        function valuenama(event) {
+            nama = event.target.value;
+        }
+        function valuejumlah(event) {
+            jumlah = event.target.value;
+        }
+
+        function inputform(event) {
+            event.preventDefault();
+            if(nama == "" || jumlah == "" || nama == null || jumlah == null){
+                controller.create({
+                    header: 'Terjadi kesalahan',
+                    message: `Mohon masukkan nama dan jumlah pengeluaran.`,
+                    buttons: [{
+                    text: 'TUTUP'
+                    }]
+                }).then(alert => alert.present());
+            }
+            else{
+                pengeluaran.push([nama,jumlah]);
+                document.getElementById("pengeluaran_list").innerHTML += "<ion-item><ion-label>" + nama + " : Rp. " + jumlah + ",00</ion-label><ion-item>";
+                var total = 0;
+                for(var arrayIndex in pengeluaran) {
+                    total += parseInt(pengeluaran[arrayIndex][1]);
+                }
+                document.getElementById("total_pengeluaran").innerHTML = "Total Pengeluaran : Rp. " + total + ",00"; 
+                document.getElementById("myForm").reset();
+                nama = jumlah = "";
+            }
+        }
+        function reset(event){
+            document.getElementById("myForm").reset();
+        }
+    </script>
+</body>
+</html>
